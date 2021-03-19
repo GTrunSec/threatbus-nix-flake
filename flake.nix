@@ -28,8 +28,25 @@
         rec {
           devShell = with pkgs; mkShell {
             buildInputs = [
+              threatbus
+              broker
             ];
           };
+
+          apps.threatbus = {
+            type = "app";
+            program = "${pkgs.threatbus}/bin/threatbus";
+          };
+
+          packages = inputs.flake-utils.lib.flattenTree rec {
+            threatbus = pkgs.threatbus;
+            broker = pkgs.broker;
+          };
+
+          hydraJobs = {
+            inherit packages;
+          };
+
           defaultPackage = pkgs.threatbus;
         }
       )

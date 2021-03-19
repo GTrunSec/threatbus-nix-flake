@@ -106,11 +106,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1614675749,
-        "narHash": "sha256-DS3naBKVLgDaAIB5wttq3MUveyvKAXsFpdYs+pxrvfY=",
+        "lastModified": 1616131831,
+        "narHash": "sha256-vl1vxKIgb0hd55aF6XjuLwzfpKHVjNPQf98/DygIqq0=",
         "owner": "hardenedlinux",
         "repo": "nixpkgs-hardenedlinux",
-        "rev": "837b4f32f1d6b1c2136e9fc1e806e2bfbd0817ea",
+        "rev": "e109421945ee4468aa68168f56a5ddb1383282c1",
         "type": "github"
       },
       "original": {
