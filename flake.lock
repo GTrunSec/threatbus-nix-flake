@@ -1,5 +1,39 @@
 {
   "nodes": {
+    "broker": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1583784312,
+        "narHash": "sha256-a5+21Q/SkDHS9cEhmcSmAxQgf3YcVgdj3EokwuVtqvA=",
+        "owner": "zeek",
+        "repo": "broker",
+        "rev": "e65cca620b1d2d26af6c5a9ee9513321fc3ed2a0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zeek",
+        "repo": "broker",
+        "rev": "e65cca620b1d2d26af6c5a9ee9513321fc3ed2a0",
+        "type": "github"
+      }
+    },
+    "caf": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1597334539,
+        "narHash": "sha256-WYzyDM66w7JlNk7/zuHUyeaLcmlrBReRrCM7KeGjikI=",
+        "owner": "actor-framework",
+        "repo": "actor-framework",
+        "rev": "347917fee3420d5fa02220af861869d1728b7fc0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "actor-framework",
+        "repo": "actor-framework",
+        "rev": "347917fee3420d5fa02220af861869d1728b7fc0",
+        "type": "github"
+      }
+    },
     "devshell-flake": {
       "locked": {
         "lastModified": 1616093728,
@@ -61,6 +95,58 @@
         "type": "github"
       }
     },
+    "flake-utils_3": {
+      "locked": {
+        "lastModified": 1601282935,
+        "narHash": "sha256-WQAFV6sGGQxrRs3a+/Yj9xUYvhTpukQJIcMbIi7LCJ4=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "588973065fce51f4763287f0fda87a174d78bf48",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_4": {
+      "locked": {
+        "lastModified": 1610051610,
+        "narHash": "sha256-U9rPz/usA1/Aohhk7Cmc2gBrEEKRzcW4nwPWMPwja4Y=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "3982c9903e93927c2164caa727cd3f6a0e6d14cc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "mach-nix": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pypi-deps-db": "pypi-deps-db"
+      },
+      "locked": {
+        "lastModified": 1615528021,
+        "narHash": "sha256-FSzp2qrHMhyiVr7K2wGdBeqf5HWGDCouuCYGNqgZD2I=",
+        "owner": "DavHau",
+        "repo": "mach-nix",
+        "rev": "ac62255e8112e547432ca0f09bfe8f4d1920fbb8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DavHau",
+        "repo": "mach-nix",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1615709438,
@@ -78,7 +164,7 @@
     },
     "nixpkgs-hardenedlinux": {
       "inputs": {
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils_3",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -97,14 +183,47 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1612206459,
+        "narHash": "sha256-xzOl+2TAskbQaIKO9AUsXS+qiDmHFj54uzUW0nRnf2o=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "449b698a0b554996ac099b4e3534514528019269",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "rev": "449b698a0b554996ac099b4e3534514528019269",
+        "type": "indirect"
+      }
+    },
+    "pypi-deps-db": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1615363940,
+        "narHash": "sha256-GJ3ONLWAr5ejqR5bKVfKpI/n+ClaxjyYewMP+QJyq5M=",
+        "owner": "DavHau",
+        "repo": "pypi-deps-db",
+        "rev": "ab522f2d3255789f1ef97fa7c83d4342be156e67",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DavHau",
+        "repo": "pypi-deps-db",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "devshell-flake": "devshell-flake",
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
+        "mach-nix": "mach-nix",
         "nixpkgs": "nixpkgs",
         "nixpkgs-hardenedlinux": "nixpkgs-hardenedlinux",
-        "threatbus-src": "threatbus-src"
+        "threatbus-src": "threatbus-src",
+        "vast-flake": "vast-flake"
       }
     },
     "threatbus-src": {
@@ -120,6 +239,28 @@
       "original": {
         "owner": "tenzir",
         "repo": "threatbus",
+        "type": "github"
+      }
+    },
+    "vast-flake": {
+      "inputs": {
+        "broker": "broker",
+        "caf": "caf",
+        "flake-utils": "flake-utils_4",
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1613975249,
+        "narHash": "sha256-in56GVuHQjdsPOGmq4sGL/0Vmfu75SYmJnH7DHfIUXA=",
+        "owner": "GTrunSec",
+        "repo": "vast",
+        "rev": "292315de5a1c91c0591e034c9af119c92aec7e90",
+        "type": "github"
+      },
+      "original": {
+        "owner": "GTrunSec",
+        "ref": "nix-flake",
+        "repo": "vast",
         "type": "github"
       }
     }
