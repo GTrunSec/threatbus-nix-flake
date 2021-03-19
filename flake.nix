@@ -260,6 +260,7 @@
                   threatbus-zeek
                   threatbus-inmem
                   threatbus-file-benchmark
+                  threatbus-zmq-app
                   final.broker
                 ];
                 postPatch = ''
