@@ -6,10 +6,11 @@
     nixpkgs.url = "nixpkgs/3a7674c896847d18e598fa5da23d7426cb9be3d2";
     threatbus-src = { url = "github:tenzir/threatbus"; flake = false; };
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
+    devshell-flake.url = "github:numtide/devshell";
     nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-utils, flake-compat, threatbus-src, nixpkgs-hardenedlinux }:
+  outputs = inputs@{ self, nixpkgs, flake-utils, flake-compat, devshell-flake, threatbus-src, nixpkgs-hardenedlinux }:
     { }
     //
     (flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ]
@@ -19,15 +20,40 @@
             inherit system;
             overlays = [
               self.overlay
+              devshell-flake.overlay
             ];
             config = { };
           };
         in
         rec {
-          devShell = with pkgs; mkShell {
-            buildInputs = [
+
+          devShell = with pkgs; devshell.mkShell {
+            packages = [
               threatbus
               broker
+            ];
+            commands = with pkgs; [
+              {
+                name = "threatbus-inmem";
+                command = ''
+                  threatbus -c config.plugins.yaml
+                '';
+                category = "plugins";
+                help = ''
+                  test the plugins with threatbus
+                '';
+              }
+
+              {
+                name = "threatbus-configFile";
+                command = ''
+                  threatbus -c config.example.yaml
+                '';
+                category = "config.yaml";
+                help = ''
+                  test the config.yaml with threatbus
+                '';
+              }
             ];
           };
 
@@ -36,10 +62,11 @@
             program = "${pkgs.threatbus}/bin/threatbus";
           };
 
-          packages = inputs.flake-utils.lib.flattenTree rec {
-            threatbus = pkgs.threatbus;
-            broker = pkgs.broker;
-          };
+          packages = inputs.flake-utils.lib.flattenTree
+            rec {
+              threatbus = pkgs.threatbus;
+              broker = pkgs.broker;
+            };
 
           hydraJobs = {
             inherit packages;
