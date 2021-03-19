@@ -32,7 +32,6 @@
             packages = [
               threatbus
               broker
-              vast
             ];
             commands = with pkgs; [
               {
@@ -44,6 +43,17 @@
                 help = ''
                   test the plugins with threatbus
                 '';
+              }
+
+              {
+                name = "get_vast";
+                command = ''
+                  nix build github:GTrunSec/vast/nix-flake#vast
+                  vast_binary=$(readlink -f ./result/bin/vast)
+                  echo $vast_bianry
+                  sed -i "s|/nix/store/.*./bin/vast|$vast_binary|" ./config.vast.example.yaml
+                '';
+                category = "vast";
               }
 
               {
