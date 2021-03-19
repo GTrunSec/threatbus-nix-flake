@@ -8,11 +8,10 @@
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     devshell-flake.url = "github:numtide/devshell";
     mach-nix = { url = "github:DavHau/mach-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
-    vast-flake = { url = "github:GTrunSec/vast/nix-flake"; };
     nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-utils, flake-compat, devshell-flake, mach-nix, vast-flake, threatbus-src, nixpkgs-hardenedlinux }:
+  outputs = inputs@{ self, nixpkgs, flake-utils, flake-compat, devshell-flake, mach-nix, threatbus-src, nixpkgs-hardenedlinux }:
     { }
     //
     (flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ]
@@ -23,8 +22,6 @@
             overlays = [
               self.overlay
               devshell-flake.overlay
-              vast-flake.overlay
-              (import "${vast-flake}/nix/overlay.nix")
             ];
             config = { };
           };
@@ -65,7 +62,6 @@
           apps = {
             threatbus = { type = "app"; program = "${pkgs.threatbus}/bin/threatbus"; };
             threatbus-vast = { type = "app"; program = "${pkgs.threatbus-vast}/bin/pyvast-threatbus"; };
-            vast = { type = "app"; program = "${pkgs.vast}/bin/vast"; };
           };
 
           packages = inputs.flake-utils.lib.flattenTree
@@ -73,7 +69,6 @@
               threatbus = pkgs.threatbus;
               broker = pkgs.broker;
               threatbus-vast = pkgs.threatbus-vast;
-              vast = pkgs.vast;
             };
 
           hydraJobs = {
