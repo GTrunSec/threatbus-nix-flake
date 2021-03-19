@@ -6,12 +6,10 @@
     nixpkgs.url = "nixpkgs/3a7674c896847d18e598fa5da23d7426cb9be3d2";
     threatbus-src = { url = "github:tenzir/threatbus"; flake = false; };
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
-    mach-nix = { url = "github:DavHau/mach-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
     nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; inputs.nixpkgs.follows = "nixpkgs"; };
-
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-utils, flake-compat, mach-nix, threatbus-src, nixpkgs-hardenedlinux }:
+  outputs = inputs@{ self, nixpkgs, flake-utils, flake-compat, threatbus-src, nixpkgs-hardenedlinux }:
     { }
     //
     (flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ]
@@ -53,13 +51,16 @@
     ) //
     {
       overlay = final: prev: {
+
         broker = prev.callPackage "${nixpkgs-hardenedlinux}/pkgs/broker" { };
+
         threatbus = with final;
           (
             let
+              version = "2021.02.24";
               threatbus-zeek = python3Packages.buildPythonPackage rec {
                 pname = "zeek";
-                version = "2021.02.24";
+                inherit version;
                 src = threatbus-src;
                 preConfigure = ''
                   cd plugins/apps/threatbus_zeek
@@ -74,6 +75,43 @@
                   --replace "threatbus >= 2021.2.24" ""
                 '';
               };
+
+              threatbus-inmem = python3Packages.buildPythonPackage rec {
+                pname = "inmem";
+                inherit version;
+                src = threatbus-src;
+                preConfigure = ''
+                  cd plugins/backbones/threatbus_inmem
+                '';
+                doCheck = false;
+                propagatedBuildInputs = with python3Packages; [
+                  stix2
+                  stix2-patterns
+                ];
+                postPatch = ''
+                  substituteInPlace plugins/backbones/threatbus_inmem/setup.py \
+                  --replace "threatbus>=2021.2.24" ""
+                '';
+              };
+
+              threatbus-file-benchmark = python3Packages.buildPythonPackage rec {
+                pname = "file_benchmark";
+                inherit version;
+                src = threatbus-src;
+                preConfigure = ''
+                  cd plugins/backbones/file_benchmark
+                '';
+                doCheck = false;
+                propagatedBuildInputs = with python3Packages; [
+                  stix2
+                  stix2-patterns
+                ];
+                postPatch = ''
+                  substituteInPlace plugins/backbones/file_benchmark/setup.py \
+                  --replace "threatbus>=2021.2.24" ""
+                '';
+              };
+
               stix2-patterns = python3Packages.buildPythonPackage rec {
                 pname = "stix2-patterns";
                 version = "1.3.2";
@@ -86,9 +124,8 @@
                   antlr4-python3-runtime
                   six
                 ];
-                postPatch = ''
-                '';
               };
+
               stix2 = python3Packages.buildPythonPackage rec {
                 pname = "stix2";
                 version = "2.1.0";
@@ -103,15 +140,11 @@
                   pytz
                   simplejson
                 ];
-                postPatch = ''
-
-                '';
               };
             in
             python3Packages.buildPythonPackage rec {
               pname = "threatbus";
-              version = "2021.02.24";
-
+              inherit version;
               src = threatbus-src;
 
               doCheck = false;
@@ -124,6 +157,8 @@
                 black
                 pluggy
                 threatbus-zeek
+                threatbus-inmem
+                threatbus-file-benchmark
                 final.broker
               ];
               postPatch = ''

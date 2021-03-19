@@ -1,0 +1,12 @@
+logging:
+  console: true
+  console_verbosity: DEBUG
+  file: false
+  file_verbosity: DEBUG
+  filename: threatbus.log
+
+plugins:
+  backbones:
+    file_benchmark:
+      input_file: bench.json
+      repetitions: 10
