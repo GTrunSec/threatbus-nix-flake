@@ -1,5 +1,5 @@
 {
-  description = "python-develop";
+  description = "The missing link to connect open-source threat intelligence tools.";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
