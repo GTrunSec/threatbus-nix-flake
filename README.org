@@ -1,0 +1,56 @@
+#+TITLE: README
+
+* Show Packages
+#+begin_src sh :async t :exports both :results code
+nix flake show
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+[1mgit+file:///home/gtrun/src/threatbus-nix-flake[0m
+[32;1m├───[0m[1mapps[0m
+[32;1m│   ├───[0m[1mx86_64-darwin[0m
+[32;1m│   │   ├───[0m[1mthreatbus[0m: app
+[32;1m│   │   └───[0m[1mthreatbus-vast[0m: app
+[32;1m│   └───[0m[1mx86_64-linux[0m
+[32;1m│       ├───[0m[1mthreatbus[0m: app
+[32;1m│       └───[0m[1mthreatbus-vast[0m: app
+[32;1m├───[0m[1mdefaultPackage[0m
+[32;1m│   ├───[0m[1mx86_64-darwin[0m: package 'python3.8-threatbus-2021.3.25'
+[32;1m│   └───[0m[1mx86_64-linux[0m: package 'python3.8-threatbus-2021.3.25'
+[32;1m├───[0m[1mdevShell[0m
+[32;1m│   ├───[0m[1mx86_64-darwin[0m: development environment 'devshell'
+[32;1m│   └───[0m[1mx86_64-linux[0m: development environment 'devshell'
+[32;1m├───[0m[1mhydraJobs[0m
+[32;1m│   ├───[0m[1mx86_64-darwin[0m
+[32;1m│   │   └───[0m[1mpackages[0m
+[32;1m│   │       ├───[0m[1mbroker[0m: derivation 'broker'
+[32;1m│   │       ├───[0m[1mthreatbus[0m: derivation 'python3.8-threatbus-2021.3.25'
+[32;1m│   │       └───[0m[1mthreatbus-vast[0m: derivation 'python3.8-threatbus_vast-2021.3.25'
+[32;1m│   └───[0m[1mx86_64-linux[0m
+[32;1m│       └───[0m[1mpackages[0m
+[32;1m│           ├───[0m[1mbroker[0m: derivation 'broker'
+[32;1m│           ├───[0m[1mthreatbus[0m: derivation 'python3.8-threatbus-2021.3.25'
+[32;1m│           └───[0m[1mthreatbus-vast[0m: derivation 'python3.8-threatbus_vast-2021.3.25'
+[32;1m├───[0m[1mnixosModule[0m: [33;1munknown[0m
+[32;1m├───[0m[1moverlay[0m: Nixpkgs overlay
+[32;1m└───[0m[1mpackages[0m
+[32;1m    ├───[0m[1mx86_64-darwin[0m
+[32;1m    │   ├───[0m[1mbroker[0m: package 'broker'
+[32;1m    │   ├───[0m[1mthreatbus[0m: package 'python3.8-threatbus-2021.3.25'
+[32;1m    │   └───[0m[1mthreatbus-vast[0m: package 'python3.8-threatbus_vast-2021.3.25'
+[32;1m    └───[0m[1mx86_64-linux[0m
+[32;1m        ├───[0m[1mbroker[0m: package 'broker'
+[32;1m        ├───[0m[1mthreatbus[0m: package 'python3.8-threatbus-2021.3.25'
+[32;1m        └───[0m[1mthreatbus-vast[0m: package 'python3.8-threatbus_vast-2021.3.25'
+#+end_src
+
+* Build Example
+
+#+begin_src sh :async t :exports both :results output
+nix build github:GTrunSec/GTrunSec/threatbus-nix-flake#<PACKAGE_NAME>
+#+end_src
+
+#+begin_src sh :async t :exports both :results output
+nix build github:GTrunSec/GTrunSec/threatbus-nix-flake#threatbus
+#+end_src
