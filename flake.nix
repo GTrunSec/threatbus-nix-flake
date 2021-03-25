@@ -12,7 +12,9 @@
   };
 
   outputs = inputs@{ self, nixpkgs, flake-utils, flake-compat, devshell-flake, mach-nix, threatbus-src, nixpkgs-hardenedlinux }:
-    { }
+    {
+      nixosModule = import ./module;
+    }
     //
     (flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ]
       (system:
@@ -92,7 +94,7 @@
     {
       overlay = final: prev:
         let
-          version = "2021.02.24";
+          version = "2021.3.25";
 
           machLib = import mach-nix
             {
@@ -191,7 +193,7 @@
             ];
             postPatch = ''
               substituteInPlace plugins/apps/threatbus_zmq_app/setup.py \
-              --replace "threatbus>=2021.2.24" ""
+              --replace "threatbus>=${version}" ""
             '';
           });
 
@@ -212,7 +214,7 @@
                   ];
                   postPatch = ''
                     substituteInPlace plugins/apps/threatbus_zeek/setup.py \
-                    --replace "threatbus >= 2021.2.24" ""
+                    --replace "threatbus >= ${version}" ""
                   '';
                 };
 
@@ -230,7 +232,7 @@
                   ];
                   postPatch = ''
                     substituteInPlace plugins/backbones/threatbus_inmem/setup.py \
-                    --replace "threatbus>=2021.2.24" ""
+                    --replace "threatbus >= 2021.2.24" ""
                   '';
                 };
 
@@ -248,7 +250,7 @@
                   ];
                   postPatch = ''
                     substituteInPlace plugins/backbones/file_benchmark/setup.py \
-                    --replace "threatbus>=2021.2.24" ""
+                    --replace "threatbus >= 2021.2.24" ""
                   '';
                 };
 
