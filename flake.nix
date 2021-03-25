@@ -8,87 +8,99 @@
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     devshell-flake.url = "github:numtide/devshell";
     mach-nix = { url = "github:DavHau/mach-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
+    vast-flake = { url = "github:GTrunSec/vast/nix-flake"; inputs.nixpkgs.follows = "nixpkgs"; };
     nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-utils, flake-compat, devshell-flake, mach-nix, threatbus-src, nixpkgs-hardenedlinux }:
+  outputs =
+    inputs@{ self
+    , nixpkgs
+    , flake-utils
+    , flake-compat
+    , devshell-flake
+    , mach-nix
+    , vast-flake
+    , threatbus-src
+    , nixpkgs-hardenedlinux
+    }:
     {
       nixosModule = import ./module;
     }
     //
     (flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ]
       (system:
-        let
-          pkgs = import nixpkgs {
-            inherit system;
-            overlays = [
-              self.overlay
-              devshell-flake.overlay
-            ];
-            config = { };
-          };
-        in
-        rec {
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [
+            self.overlay
+            devshell-flake.overlay
+            vast-flake.overlay
+          ];
+          config = { };
+        };
+      in
+      rec {
 
-          devShell = with pkgs; devshell.mkShell {
-            packages = [
-              threatbus
-              broker
-            ];
-            commands = with pkgs; [
-              {
-                name = "threatbus-inmem";
-                command = ''
-                  threatbus -c config.plugins.yaml
-                '';
-                category = "plugins";
-                help = ''
-                  test the plugins with threatbus
-                '';
-              }
+        devShell = with pkgs; devshell.mkShell {
+          packages = [
+            threatbus
+            broker
+          ];
+          commands = with pkgs; [
+            {
+              name = "threatbus-inmem";
+              command = ''
+                threatbus -c config.plugins.yaml
+              '';
+              category = "plugins";
+              help = ''
+                test the plugins with threatbus
+              '';
+            }
 
-              {
-                name = "get_vast";
-                command = ''
-                  nix build github:GTrunSec/vast/nix-flake#vast
-                  vast_binary=$(readlink -f ./result/bin/vast)
-                  echo $vast_bianry
-                  sed -i "s|/nix/store/.*./bin/vast|$vast_binary|" ./config.vast.example.yaml
-                '';
-                category = "vast";
-              }
+            {
+              name = "get_vast";
+              command = ''
+                nix build github:GTrunSec/vast/nix-flake#vast
+                vast_binary=$(readlink -f ./result/bin/vast)
+                echo $vast_bianry
+                sed -i "s|/nix/store/.*./bin/vast|$vast_binary|" ./config.vast.example.yaml
+              '';
+              category = "vast";
+            }
 
-              {
-                name = "threatbus-configFile";
-                command = ''
-                  threatbus -c config.example.yaml
-                '';
-                category = "config.yaml";
-                help = ''
-                  test the config.yaml with threatbus
-                '';
-              }
-            ];
-          };
+            {
+              name = "threatbus-configFile";
+              command = ''
+                threatbus -c config.example.yaml
+              '';
+              category = "config.yaml";
+              help = ''
+                test the config.yaml with threatbus
+              '';
+            }
+          ];
+        };
 
-          apps = {
-            threatbus = { type = "app"; program = "${pkgs.threatbus}/bin/threatbus"; };
-            threatbus-vast = { type = "app"; program = "${pkgs.threatbus-vast}/bin/pyvast-threatbus"; };
-          };
+        apps = {
+          threatbus = { type = "app"; program = "${pkgs.threatbus}/bin/threatbus"; };
+          threatbus-pyvast = { type = "app"; program = "${pkgs.threatbus-pyvast}/bin/pyvast-threatbus"; };
+        };
 
-          packages = inputs.flake-utils.lib.flattenTree
-            rec {
-              threatbus = pkgs.threatbus;
-              broker = pkgs.broker;
-              threatbus-vast = pkgs.threatbus-vast;
-            };
-
-          hydraJobs = {
-            inherit packages;
+        packages = inputs.flake-utils.lib.flattenTree
+          rec {
+            threatbus = pkgs.threatbus;
+            broker = pkgs.broker;
+            threatbus-pyvast = pkgs.threatbus-pyvast;
           };
 
-          defaultPackage = pkgs.threatbus;
-        }
+        hydraJobs = {
+          inherit packages;
+        };
+
+        defaultPackage = pkgs.threatbus;
+      }
       )
     ) //
     {
@@ -113,9 +125,9 @@
 
           broker = prev.callPackage "${nixpkgs-hardenedlinux}/pkgs/broker" { };
 
-          threatbus-vast = with final;
+          threatbus-pyvast = with final;
             (python3Packages.buildPythonPackage {
-              pname = "threatbus_vast";
+              pname = "threatbus_pyvast";
               inherit version;
               src = threatbus-src;
               preConfigure = ''
@@ -130,17 +142,12 @@
                 pyzmq
                 threatbus-zmq-app
                 coloredlogs
-                python-packages-custom
-                (threatbus.overridePythonAttrs (_: {
-                  src = prev.fetchurl {
-                    url = "https://github.com/tenzir/threatbus/archive/2020.12.16.tar.gz";
-                    hash = "sha256-8hbOftFkOvuf7XG4GN2WscVDWImqDgkIhlT1VdKHFfw=";
-                  };
-                }))
+                pyvast
+                threatbus
               ];
               postPatch = ''
                 substituteInPlace apps/vast/setup.py \
-                --replace "threatbus >= 2020.12.16, < 2021.2.24" "" \
+                --replace "threatbus >= ${version}" "" \
                 --replace "threatbus-zmq-app >= 2020.12.16, < 2021.2.24" ""
               '';
             });

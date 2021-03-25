@@ -1,5 +1,5 @@
 #+TITLE: README
-
+#+PROPERTY: header-args:sh :prologue "exec 2>&1" :epilogue ":"
 * Show Packages
 #+begin_src sh :async t :exports both :results code
 nix flake show
@@ -7,6 +7,7 @@ nix flake show
 
 #+RESULTS:
 #+begin_src sh
+warning: Git tree '/home/gtrun/src/threatbus-nix-flake' is dirty
 [1mgit+file:///home/gtrun/src/threatbus-nix-flake[0m
 [32;1m├───[0m[1mapps[0m
 [32;1m│   ├───[0m[1mx86_64-darwin[0m
