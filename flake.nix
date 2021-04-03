@@ -23,7 +23,82 @@
     }:
     {
       nixosModules = {
-        threatbus = import ./module/threatbus-module.nix;
+        threatbus = { config, lib, pkgs, ... }:
+          with lib;
+          let
+            cfg = config.services.threatbus;
+            configFile = pkgs.writeText "config.yml" cfg.settings;
+          in
+          {
+            options =
+              {
+                services.threatbus = {
+                  enable = mkOption {
+                    type = types.bool;
+                    default = false;
+                    description = ''
+                      Whether to enable threatbus endpoint
+                    '';
+                  };
+                  settings = mkOption {
+                    default = { };
+                    description = ''
+                      settings = builtins.readFile ./config.example.yaml;
+                    '';
+                  };
+                  package = mkOption {
+                    type = types.package;
+                    default = pkgs.threatbus;
+                    description = "The threatbus package.";
+                  };
+                };
+              };
+
+            config = mkIf cfg.enable {
+              users.users.threatbus =
+                { isSystemUser = true; group = "threatbus"; };
+
+              users.groups.threatbus = { };
+
+              systemd.services.threatbus = {
+                enable = true;
+                description = "The missing link to connect open-source threat intelligence tools.";
+                wantedBy = [ "multi-user.target" ];
+
+                after = [
+                  "network-online.target"
+                ];
+
+                script = ''
+                  exec ${cfg.package}/bin/threatbus --config=${configFile}
+                '';
+
+                serviceConfig = {
+                  Restart = "always";
+                  RestartSec = "10";
+                  ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
+                  User = "threatbus";
+                  Type = "simple";
+                  WorkingDirectory = "/var/lib/threatbus";
+                  ReadWritePaths = "/var/lib/threatbus";
+                  RuntimeDirectory = "threatbus";
+                  CacheDirectory = "threatbus";
+                  StateDirectory = "threatbus";
+                  SyslogIdentifier = "threatbus";
+                  PrivateUsers = true;
+                  ProtectSystem = "strict";
+                  DynamicUser = mkForce false;
+                  PrivateTmp = true;
+                  ProtectHome = true;
+                  PrivateDevices = true;
+                  ProtectKernelTunables = true;
+                  ProtectControlGroups = true;
+                  ProtectKernelModules = true;
+                  ProtectKernelLogs = true;
+                };
+              };
+            };
+          };
         threatbus-vast = { config, lib, pkgs, ... }:
           with lib;
           let
@@ -44,12 +119,15 @@
 
                   vast_binary = mkOption {
                     default = ''
-                      vast_binary: /nix/store/9431x19nswxng4xj1gk185fm76w5dffr-vast-2021.03.25-rc2-46-gf427936fd-dirty/bin/vast
+                      vast_binary: ${vast-flake.packages."x86_64-linux".vast}/bin/vast
                     '';
                   };
 
                   settings = mkOption {
                     default = { };
+                    description = ''
+                      settings = builtins.readFile ./config.vast.example.yaml;
+                    '';
                   };
 
                   package = mkOption {
@@ -68,7 +146,7 @@
 
               systemd.services.threatbus-vast = {
                 enable = true;
-                description = "Visibility Across Space and Time";
+                description = "Vast::The missing link to connect open-source threat intelligence tools.";
                 wantedBy = [ "multi-user.target" ];
 
                 after = [

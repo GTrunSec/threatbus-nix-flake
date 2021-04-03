@@ -224,11 +224,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1617418150,
-        "narHash": "sha256-DiDuYagnS1O1TRTlgj4647Ks9+CVnP5Mihgls05eONU=",
+        "lastModified": 1617488711,
+        "narHash": "sha256-cgZJrctK+jRf/rZvybgDneqqxuIrzfP+5bNp/neZc1o=",
         "owner": "GTrunSec",
         "repo": "vast",
-        "rev": "567746338093ff5be2cdae8e398af6fd5d1d5fd3",
+        "rev": "659cd4628cffb8b6dc693ef8628e40f3a07354b7",
         "type": "github"
       },
       "original": {
