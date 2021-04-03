@@ -41,14 +41,17 @@
                       Whether to enable threatbus-vast endpoint
                     '';
                   };
+
                   vast_binary = mkOption {
                     default = ''
-                      vast_binary: "/nix/store/9431x19nswxng4xj1gk185fm76w5dffr-vast-2021.03.25-rc2-46-gf427936fd-dirty/bin/vast"
+                      vast_binary: /nix/store/9431x19nswxng4xj1gk185fm76w5dffr-vast-2021.03.25-rc2-46-gf427936fd-dirty/bin/vast
                     '';
                   };
+
                   settings = mkOption {
                     default = { };
                   };
+
                   package = mkOption {
                     type = types.package;
                     default = self.outputs.packages."x86_64-linux".threatbus-pyvast;
@@ -73,18 +76,18 @@
                   #"zeek.service
                 ];
 
-                confinement = {
-                  enable = true;
-                  binSh = null;
-                };
-
                 script = ''
                   exec ${cfg.package}/bin/pyvast-threatbus --config=${configFile}
                 '';
 
+                environment = {
+                  PYVAST_THREATBUSDIR = "/var/lib/threatbus-vast";
+                };
+
                 serviceConfig = {
                   Restart = "always";
                   RestartSec = "10";
+                  Type = "simple";
                   ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
                   User = "threatbus";
                   WorkingDirectory = "/var/lib/threatbus-vast";
@@ -94,6 +97,7 @@
                   StateDirectory = "threatbus-vast";
                   SyslogIdentifier = "threatbus-vast";
                   PrivateUsers = true;
+                  ProtectSystem = "strict";
                   DynamicUser = mkForce false;
                   PrivateTmp = true;
                   ProtectHome = true;
