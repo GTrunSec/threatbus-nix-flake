@@ -10,7 +10,7 @@ metrics:
   filename: metrics.log
 
 vast: "localhost:42000"
-vast_binary: "/nix/store/3lvhifzdn31c96pb7zxklcwx5x3bnzly-vast-2021.01.28-269-g283fddfae-dirty/bin/vast"
+vast_binary: "/nix/store/9431x19nswxng4xj1gk185fm76w5dffr-vast-2021.03.25-rc2-46-gf427936fd-dirty/bin/vast"
 threatbus: "127.0.0.1:13370"
 snapshot: 30
 # live-matching requires you to install the VAST matcher plugin

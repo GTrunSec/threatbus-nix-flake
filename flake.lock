@@ -98,21 +98,6 @@
     },
     "flake-utils_2": {
       "locked": {
-        "lastModified": 1601282935,
-        "narHash": "sha256-WQAFV6sGGQxrRs3a+/Yj9xUYvhTpukQJIcMbIi7LCJ4=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "588973065fce51f4763287f0fda87a174d78bf48",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "flake-utils_3": {
-      "locked": {
         "lastModified": 1614513358,
         "narHash": "sha256-LakhOx3S1dRjnh0b5Dg3mbZyH0ToC9I8Y2wKSkBaTzU=",
         "owner": "numtide",
@@ -126,7 +111,7 @@
         "type": "github"
       }
     },
-    "flake-utils_4": {
+    "flake-utils_3": {
       "locked": {
         "lastModified": 1610051610,
         "narHash": "sha256-U9rPz/usA1/Aohhk7Cmc2gBrEEKRzcW4nwPWMPwja4Y=",
@@ -138,28 +123,6 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "mach-nix": {
-      "inputs": {
-        "flake-utils": "flake-utils_2",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "pypi-deps-db": "pypi-deps-db"
-      },
-      "locked": {
-        "lastModified": 1615528021,
-        "narHash": "sha256-FSzp2qrHMhyiVr7K2wGdBeqf5HWGDCouuCYGNqgZD2I=",
-        "owner": "DavHau",
-        "repo": "mach-nix",
-        "rev": "ac62255e8112e547432ca0f09bfe8f4d1920fbb8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "DavHau",
-        "repo": "mach-nix",
         "type": "github"
       }
     },
@@ -181,10 +144,8 @@
     "nixpkgs-hardenedlinux": {
       "inputs": {
         "flake-compat": "flake-compat_2",
-        "flake-utils": "flake-utils_3",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": "nixpkgs_2"
       },
       "locked": {
         "lastModified": 1616366723,
@@ -200,20 +161,32 @@
         "type": "github"
       }
     },
-    "pypi-deps-db": {
-      "flake": false,
+    "nixpkgs_2": {
       "locked": {
-        "lastModified": 1615363940,
-        "narHash": "sha256-GJ3ONLWAr5ejqR5bKVfKpI/n+ClaxjyYewMP+QJyq5M=",
-        "owner": "DavHau",
-        "repo": "pypi-deps-db",
-        "rev": "ab522f2d3255789f1ef97fa7c83d4342be156e67",
+        "lastModified": 1610942247,
+        "narHash": "sha256-PKo1ATAlC6BmfYSRmX0TVmNoFbrec+A5OKcabGEu2yU=",
+        "path": "/nix/store/sdjxjsd5phr225rs2qzklj2xci0c9gr0-source",
+        "rev": "7d71001b796340b219d1bfa8552c81995017544a",
+        "type": "path"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1612206459,
+        "narHash": "sha256-xzOl+2TAskbQaIKO9AUsXS+qiDmHFj54uzUW0nRnf2o=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "449b698a0b554996ac099b4e3534514528019269",
         "type": "github"
       },
       "original": {
-        "owner": "DavHau",
-        "repo": "pypi-deps-db",
-        "type": "github"
+        "id": "nixpkgs",
+        "rev": "449b698a0b554996ac099b4e3534514528019269",
+        "type": "indirect"
       }
     },
     "root": {
@@ -221,7 +194,6 @@
         "devshell-flake": "devshell-flake",
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
-        "mach-nix": "mach-nix",
         "nixpkgs": "nixpkgs",
         "nixpkgs-hardenedlinux": "nixpkgs-hardenedlinux",
         "threatbus-src": "threatbus-src",
@@ -248,17 +220,15 @@
       "inputs": {
         "broker": "broker",
         "caf": "caf",
-        "flake-utils": "flake-utils_4",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
+        "flake-utils": "flake-utils_3",
+        "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1616711796,
-        "narHash": "sha256-MZeA2Uk9wyts4kDFUVufyL8GFSkH/1I74MVd1XmZju4=",
+        "lastModified": 1617418150,
+        "narHash": "sha256-DiDuYagnS1O1TRTlgj4647Ks9+CVnP5Mihgls05eONU=",
         "owner": "GTrunSec",
         "repo": "vast",
-        "rev": "d083747e31d2faf8c9803aa6826add507be973b4",
+        "rev": "567746338093ff5be2cdae8e398af6fd5d1d5fd3",
         "type": "github"
       },
       "original": {

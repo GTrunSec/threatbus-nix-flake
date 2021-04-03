@@ -7,9 +7,8 @@
     threatbus-src = { url = "github:tenzir/threatbus"; flake = false; };
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     devshell-flake.url = "github:numtide/devshell";
-    mach-nix = { url = "github:DavHau/mach-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
-    vast-flake = { url = "github:GTrunSec/vast/nix-flake"; inputs.nixpkgs.follows = "nixpkgs"; };
-    nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; inputs.nixpkgs.follows = "nixpkgs"; };
+    vast-flake = { url = "github:GTrunSec/vast/nix-flake"; };
+    nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; };
   };
 
   outputs =
@@ -18,13 +17,96 @@
     , flake-utils
     , flake-compat
     , devshell-flake
-    , mach-nix
     , vast-flake
     , threatbus-src
     , nixpkgs-hardenedlinux
     }:
     {
-      nixosModule = import ./module;
+      nixosModules = {
+        threatbus = import ./module/threatbus-module.nix;
+        threatbus-vast = { config, lib, pkgs, ... }:
+          with lib;
+          let
+            cfg = config.services.threatbus-vast;
+            configFile = pkgs.writeText "config.yml" (cfg.settings + cfg.vast_binary);
+          in
+          {
+            options =
+              {
+                services.threatbus-vast = {
+                  enable = mkOption {
+                    type = types.bool;
+                    default = false;
+                    description = ''
+                      Whether to enable threatbus-vast endpoint
+                    '';
+                  };
+                  vast_binary = mkOption {
+                    default = ''
+                      vast_binary: "/nix/store/9431x19nswxng4xj1gk185fm76w5dffr-vast-2021.03.25-rc2-46-gf427936fd-dirty/bin/vast"
+                    '';
+                  };
+                  settings = mkOption {
+                    default = { };
+                  };
+                  package = mkOption {
+                    type = types.package;
+                    default = self.outputs.packages."x86_64-linux".threatbus-pyvast;
+                    description = "The threatbus-vast package.";
+                  };
+                };
+              };
+
+            config = mkIf cfg.enable {
+              users.users.threatbus =
+                { isSystemUser = true; group = "threatbus"; };
+
+              users.groups.threatbus = { };
+
+              systemd.services.threatbus-vast = {
+                enable = true;
+                description = "Visibility Across Space and Time";
+                wantedBy = [ "multi-user.target" ];
+
+                after = [
+                  "network-online.target"
+                  #"zeek.service
+                ];
+
+                confinement = {
+                  enable = true;
+                  binSh = null;
+                };
+
+                script = ''
+                  exec ${cfg.package}/bin/pyvast-threatbus --config=${configFile}
+                '';
+
+                serviceConfig = {
+                  Restart = "always";
+                  RestartSec = "10";
+                  ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
+                  User = "threatbus";
+                  WorkingDirectory = "/var/lib/threatbus-vast";
+                  ReadWritePaths = "/var/lib/threatbus-vast";
+                  RuntimeDirectory = "threatbus-vast";
+                  CacheDirectory = "threatbus-vast";
+                  StateDirectory = "threatbus-vast";
+                  SyslogIdentifier = "threatbus-vast";
+                  PrivateUsers = true;
+                  DynamicUser = mkForce false;
+                  PrivateTmp = true;
+                  ProtectHome = true;
+                  PrivateDevices = true;
+                  ProtectKernelTunables = true;
+                  ProtectControlGroups = true;
+                  ProtectKernelModules = true;
+                  ProtectKernelLogs = true;
+                };
+              };
+            };
+          };
+      };
     }
     //
     (flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ]
@@ -46,6 +128,7 @@
           packages = [
             threatbus
             broker
+            threatbus-pyvast
           ];
           commands = with pkgs; [
             {
@@ -53,9 +136,9 @@
               command = ''
                 threatbus -c config.plugins.yaml
               '';
-              category = "plugins";
+              category = "plugin";
               help = ''
-                test the plugins with threatbus
+                test the plugin with threatbus
               '';
             }
 
@@ -64,18 +147,19 @@
               command = ''
                 nix build github:GTrunSec/vast/nix-flake#vast
                 vast_binary=$(readlink -f ./result/bin/vast)
-                echo $vast_bianry
                 sed -i "s|/nix/store/.*./bin/vast|$vast_binary|" ./config.vast.example.yaml
+                echo $vast_binary
               '';
+              help = "print vast executable path";
               category = "vast";
             }
 
             {
-              name = "threatbus-configFile";
+              name = "threatbus-test";
               command = ''
                 threatbus -c config.example.yaml
               '';
-              category = "config.yaml";
+              category = "threatbus";
               help = ''
                 test the config.yaml with threatbus
               '';
@@ -88,12 +172,12 @@
           threatbus-pyvast = { type = "app"; program = "${pkgs.threatbus-pyvast}/bin/pyvast-threatbus"; };
         };
 
-        packages = inputs.flake-utils.lib.flattenTree
-          rec {
-            threatbus = pkgs.threatbus;
-            broker = pkgs.broker;
-            threatbus-pyvast = pkgs.threatbus-pyvast;
-          };
+        packages = flake-utils.lib.flattenTree {
+          threatbus = pkgs.threatbus;
+          broker = pkgs.broker;
+          threatbus-pyvast = pkgs.threatbus-pyvast;
+          vast = vast-flake.packages.${system}.vast;
+        };
 
         hydraJobs = {
           inherit packages;
@@ -107,19 +191,6 @@
       overlay = final: prev:
         let
           version = "2021.3.25";
-
-          machLib = import mach-nix
-            {
-              pypiDataRev = "2205d5a0fc9b691e7190d18ba164a3c594570a4b";
-              pypiDataSha256 = "1aaylax7jlwsphyz3p73790qbrmva3mzm56yf5pbd8hbkaavcp9g";
-              python = "python38";
-            };
-
-          python-packages-custom = machLib.mkPython rec {
-            requirements = ''
-              pyvast==2021.2.24
-            '';
-          };
         in
         {
 
