@@ -73,7 +73,7 @@
 
                 after = [
                   "network-online.target"
-                  #"zeek.service
+                  "vast.service"
                 ];
 
                 script = ''
@@ -145,7 +145,16 @@
                 test the plugin with threatbus
               '';
             }
-
+            {
+              name = "threatbus-vast";
+              command = ''
+                pyvast-threatbus -c config.vast.example.yaml
+              '';
+              category = "threatbus";
+              help = ''
+                test the threatbus with vast
+              '';
+            }
             {
               name = "get_vast";
               command = ''
