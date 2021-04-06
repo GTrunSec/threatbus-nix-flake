@@ -23,6 +23,7 @@
     }:
     {
       nixosModules = {
+
         threatbus = { config, lib, pkgs, ... }:
           with lib;
           let
@@ -48,7 +49,7 @@
                   };
                   package = mkOption {
                     type = types.package;
-                    default = pkgs.threatbus;
+                    default = self.outputs.packages."${pkgs.system}".threatbus;
                     description = "The threatbus package.";
                   };
                 };
@@ -68,6 +69,10 @@
                 after = [
                   "network-online.target"
                 ];
+
+                environment = {
+                  THREATBUSDIR = "/var/lib/threatbus";
+                };
 
                 script = ''
                   exec ${cfg.package}/bin/threatbus --config=${configFile}
@@ -99,6 +104,7 @@
               };
             };
           };
+
         threatbus-vast = { config, lib, pkgs, ... }:
           with lib;
           let
@@ -132,7 +138,7 @@
 
                   package = mkOption {
                     type = types.package;
-                    default = self.outputs.packages."x86_64-linux".threatbus-pyvast;
+                    default = self.outputs.packages."${pkgs.system}".threatbus-pyvast;
                     description = "The threatbus-vast package.";
                   };
                 };

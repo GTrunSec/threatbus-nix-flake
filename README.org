@@ -55,3 +55,118 @@ nix build github:GTrunSec/GTrunSec/threatbus-nix-flake#<PACKAGE_NAME>
 #+begin_src sh :async t :exports both :results output
 nix build github:GTrunSec/GTrunSec/threatbus-nix-flake#threatbus
 #+end_src
+
+* Add Nixos Modules Flake to NixOS
+
+#+begin_src nix :async t :exports both :results output
+threatbus-flake.nixosModules.threatbus
+threatbus-flake.nixosModules.threatbus-vast
+#+end_src
+
+- Example Module Settings
+
+#+begin_src nix :async t :exports both :results output
+  services.threatbus-vast = {
+    enable = true;
+    settings = builtins.readFile ./config.vast.example.yaml;
+  };
+
+  services.threatbus = {
+    enable = true;
+    settings = builtins.readFile ./config.example.yaml;
+  };
+#+end_src
+
+* ThreatBus Systemd Services Debugging
+
+- Threatbus-vast
+
+#+begin_src sh :async t :exports both :results output
+systemctl status threatbus-vast.service
+#+end_src
+
+#+RESULTS:
+#+begin_example
+● threatbus-vast.service - Vast::The missing link to connect open-source threat intelligence tools.
+     Loaded: loaded (/nix/store/jiqi9prhydz3kbg3nj0i95yn48mbxinf-unit-threatbus-vast.service/threatbus-vast.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2021-04-05 11:59:26 PDT; 9h ago
+   Main PID: 2473 (.pyvast-threatb)
+         IP: 22.2M in, 24.4M out
+         IO: 21.6M read, 6.5M written
+      Tasks: 3 (limit: 4915)
+     Memory: 54.3M
+        CPU: 20min 31.587s
+     CGroup: /system.slice/threatbus-vast.service
+             └─2473 /nix/store/v3bj7jrns4sk6yj2rp30p6v2l7p707az-python3-3.8.8/bin/python3.8 /nix/store/cn6yl8blwkqqssaa6n1508m3mmaqzq1r-python3.8-threatbus_pyvast-2021.3.25/bin/.pyvast-threatbus-wrapped --config=/nix/store/9axvi3icnagklxpc00q4axya0x49qbs3-config.yml
+
+Apr 05 21:19:59 NixOS threatbus-vast[2473]: 2021-04-05 21:19:59 DEBUG    [pyvast-threatbus] Calling Threat Bus management endpoint 127.0.0.1:13370
+Apr 05 21:19:59 NixOS threatbus-vast[2473]: 2021-04-05 21:19:59 INFO     [pyvast-threatbus] Subscribing to topic 'stix2/indicator'...
+Apr 05 21:20:04 NixOS threatbus-vast[2473]: 2021-04-05 21:20:04 ERROR    [pyvast-threatbus] Subscription failed
+Apr 05 21:20:04 NixOS threatbus-vast[2473]: 2021-04-05 21:20:04 DEBUG    [pyvast-threatbus] PyVAST: VAST client configured to use endpoint 127.0.0.1:4000
+Apr 05 21:20:04 NixOS threatbus-vast[2473]: 2021-04-05 21:20:04 DEBUG    [pyvast-threatbus] Calling Threat Bus management endpoint 127.0.0.1:13370
+Apr 05 21:20:04 NixOS threatbus-vast[2473]: 2021-04-05 21:20:04 INFO     [pyvast-threatbus] Subscribing to topic 'stix2/indicator'...
+Apr 05 21:20:09 NixOS threatbus-vast[2473]: 2021-04-05 21:20:09 ERROR    [pyvast-threatbus] Subscription failed
+Apr 05 21:20:09 NixOS threatbus-vast[2473]: 2021-04-05 21:20:09 DEBUG    [pyvast-threatbus] PyVAST: VAST client configured to use endpoint 127.0.0.1:4000
+Apr 05 21:20:09 NixOS threatbus-vast[2473]: 2021-04-05 21:20:09 DEBUG    [pyvast-threatbus] Calling Threat Bus management endpoint 127.0.0.1:13370
+Apr 05 21:20:09 NixOS threatbus-vast[2473]: 2021-04-05 21:20:09 INFO     [pyvast-threatbus] Subscribing to topic 'stix2/indicator'...
+#+end_example
+
+- threatbus
+
+#+begin_src sh :async t :exports both :results output
+systemctl status threatbus.service
+#+end_src
+
+#+RESULTS:
+#+begin_example
+● threatbus.service - The missing link to connect open-source threat intelligence tools.
+     Loaded: loaded (/nix/store/dkb1dkxsn9skqhlcddi5a8h8nlf9sgdf-unit-threatbus.service/threatbus.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2021-04-05 21:39:38 PDT; 1min 21s ago
+   Main PID: 10211 (.threatbus-wrap)
+         IP: 15.6K in, 12.7K out
+         IO: 0B read, 0B written
+      Tasks: 34 (limit: 4915)
+     Memory: 30.5M
+        CPU: 5.259s
+     CGroup: /system.slice/threatbus.service
+             └─10211 /nix/store/v3bj7jrns4sk6yj2rp30p6v2l7p707az-python3-3.8.8/bin/python3.8 /nix/store/6jqkqml5hpgcm5iknifmbbjq6h6gvgyz-python3.8-threatbus-2021.3.25/bin/.threatbus-wrapped --config=/nix/store/bchy3qlc3rp11hbsbn22l4i9dzrwjsly-config.yml
+
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 WARNING  [threatbus] Found configuration for 'rabbitmq' but no corresponding plugin is installed.
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 WARNING  [threatbus] Found configuration for 'misp' but no corresponding plugin is installed.
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 WARNING  [threatbus] Found configuration for 'cif3' but no corresponding plugin is installed.
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 INFO     [threatbus] Starting plugins...
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 INFO     [threatbus_zmq_app.plugin] ZeroMQ app plugin started
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 INFO     [threatbus_zeek.plugin] Zeek plugin started
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 INFO     [threatbus_zmq_app.plugin] Received subscription for topic stix2/indicator, snapshot 30 days, 0:00:00
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 INFO     [threatbus] Requesting snapshot from all plugins for message type INDICATOR and time delta 30 days, 0:00:00
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 INFO     [threatbus_zmq_app.plugin] Received unsubscription from topic nszlgaghmpujlhncpajelhbqapkfbbrl
+Apr 05 21:39:38 NixOS threatbus[10211]: 2021-04-05 21:39:38 WARNING  [threatbus_zmq_app.plugin] No one was subscribed for that topic. Skipping.
+#+end_example
+
+
+- Vast
+
+#+begin_src sh :async t :exports both :results output
+systemctl status vast.service
+#+end_src
+
+#+RESULTS:
+#+begin_example
+● vast.service - Visibility Across Space and Time
+     Loaded: loaded (/nix/store/jnzs0h4ymhhmkhd9k0jccd86yj60yks2-vast-chroot-paths/lib/systemd/system/vast.service; enabled; vendor preset: enabled)
+    Drop-In: /nix/store/rghm1g5zn25pc9ddi36n7lj6g3izfrh3-system-units/vast.service.d
+             └─overrides.conf
+     Active: active (running) since Mon 2021-04-05 11:59:26 PDT; 9h ago
+   Main PID: 2472 (vast)
+         IP: 12.2M in, 14.2M out
+         IO: 32.1M read, 4.0M written
+      Tasks: 21 (limit: 4915)
+     Memory: 444.4M
+        CPU: 31min 18.471s
+     CGroup: /system.slice/vast.service
+             └─2472 /nix/store/b1lvwgbhk6ab9ja36b838mg64v8a97j8-vast-2021.03.25-rc2-46-gf427936fd-dirty/bin/vast --config=/nix/store/bx9ncl6awridvamivf5m1nvr3jbwm3r8-vast.conf start
+
+Apr 05 11:59:26 NixOS systemd[1]: Started Visibility Across Space and Time.
+Apr 05 11:59:27 NixOS vast[2472]: [18:59:27.266] loaded configuration file: "/nix/store/bx9ncl6awridvamivf5m1nvr3jbwm3r8-vast.conf"
+Apr 05 11:59:27 NixOS vast[2472]: [18:59:27.304] VAST node is listening on 127.0.0.1:4000
+#+end_example
