@@ -134,7 +134,7 @@
 
                   vast_binary = mkOption {
                     default = ''
-                      vast_binary: ${vast-flake.packages."x86_64-linux".vast}/bin/vast
+                      vast_binary: ${vast-flake.packages."${pkgs.system}".vast}/bin/vast
                     '';
                   };
 
