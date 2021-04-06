@@ -7,8 +7,8 @@
     threatbus-src = { url = "github:tenzir/threatbus"; flake = false; };
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     devshell-flake.url = "github:numtide/devshell";
-    vast-flake = { url = "github:GTrunSec/vast/nix-flake"; };
-    nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; };
+    vast-flake = { url = "github:GTrunSec/vast/nix-flake"; inputs.nixpkgs-hardenedlinux.follows = "nixpkgs-hardenedlinux"; inputs.flake-utils.follows = "flake-utils"; };
+    nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; inputs.flake-utils.follows = "flake-utils"; };
   };
 
   outputs =
@@ -47,6 +47,15 @@
                       settings = builtins.readFile ./config.example.yaml;
                     '';
                   };
+
+                  dataDir = mkOption {
+                    type = types.path;
+                    default = "/var/lib/threatbus";
+                    description = ''
+                      Data directory for threatbus
+                    '';
+                  };
+
                   package = mkOption {
                     type = types.package;
                     default = self.outputs.packages."${pkgs.system}".threatbus;
@@ -71,7 +80,7 @@
                 ];
 
                 environment = {
-                  THREATBUSDIR = "/var/lib/threatbus";
+                  THREATBUSDIR = "${cfg.dataDir}";
                 };
 
                 script = ''
@@ -84,8 +93,8 @@
                   ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
                   User = "threatbus";
                   Type = "simple";
-                  WorkingDirectory = "/var/lib/threatbus";
-                  ReadWritePaths = "/var/lib/threatbus";
+                  WorkingDirectory = "${cfg.dataDir}";
+                  ReadWritePaths = "${cfg.dataDir}";
                   RuntimeDirectory = "threatbus";
                   CacheDirectory = "threatbus";
                   StateDirectory = "threatbus";
@@ -136,6 +145,14 @@
                     '';
                   };
 
+                  dataDir = mkOption {
+                    type = types.path;
+                    default = "/var/lib/threatbus-vast";
+                    description = ''
+                      Data directory for threatbus vast
+                    '';
+                  };
+
                   package = mkOption {
                     type = types.package;
                     default = self.outputs.packages."${pkgs.system}".threatbus-pyvast;
@@ -165,7 +182,7 @@
                 '';
 
                 environment = {
-                  PYVAST_THREATBUSDIR = "/var/lib/threatbus-vast";
+                  PYVAST_THREATBUSDIR = "${cfg.dataDir}";
                 };
 
                 serviceConfig = {
@@ -174,8 +191,8 @@
                   Type = "simple";
                   ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
                   User = "threatbus";
-                  WorkingDirectory = "/var/lib/threatbus-vast";
-                  ReadWritePaths = "/var/lib/threatbus-vast";
+                  WorkingDirectory = "${cfg.dataDir}";
+                  ReadWritePaths = "${cfg.dataDir}";
                   RuntimeDirectory = "threatbus-vast";
                   CacheDirectory = "threatbus-vast";
                   StateDirectory = "threatbus-vast";
