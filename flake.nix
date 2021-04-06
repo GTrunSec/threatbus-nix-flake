@@ -297,11 +297,14 @@
             (python3Packages.buildPythonPackage {
               pname = "threatbus_pyvast";
               inherit version;
+
               src = threatbus-src;
               preConfigure = ''
                 cd apps/vast
               '';
+
               doCheck = false;
+
               propagatedBuildInputs = with python3Packages; [
                 stix2
                 stix2-patterns
@@ -313,11 +316,19 @@
                 pyvast
                 threatbus
               ];
+
               postPatch = ''
                 substituteInPlace apps/vast/setup.py \
                 --replace "threatbus >= ${version}" "" \
                 --replace "threatbus-zmq-app >= 2020.12.16, < 2021.2.24" ""
               '';
+
+              meta = with lib; {
+                description = "The missing link to connect open-source threat intelligence tools.";
+                homepage = "https://github.com/tenzir/threatbus";
+                platforms = platforms.unix;
+                license = licenses.bsd3; # BSD 3-Clause variant
+              };
             });
 
           stix2-patterns = with final;
@@ -356,20 +367,31 @@
             pname = "threatbus_zmq_app";
             inherit version;
             src = threatbus-src;
+
             preConfigure = ''
               cd plugins/apps/threatbus_zmq_app
             '';
+
             doCheck = false;
+
             propagatedBuildInputs = with python3Packages; [
               stix2
               stix2-patterns
               python-dateutil
               pyzmq
             ];
+
             postPatch = ''
               substituteInPlace plugins/apps/threatbus_zmq_app/setup.py \
               --replace "threatbus>=${version}" ""
             '';
+
+            meta = with lib; {
+              description = "The missing link to connect open-source threat intelligence tools.";
+              homepage = "https://github.com/tenzir/threatbus";
+              platforms = platforms.unix;
+              license = licenses.bsd3; # BSD 3-Clause variant
+            };
           });
 
           threatbus = with final;
@@ -379,18 +401,29 @@
                   pname = "threatbus_zeek";
                   inherit version;
                   src = threatbus-src;
+
                   preConfigure = ''
                     cd plugins/apps/threatbus_zeek
                   '';
+
                   doCheck = false;
+
                   propagatedBuildInputs = with python3Packages; [
                     stix2
                     stix2-patterns
                   ];
+
                   postPatch = ''
                     substituteInPlace plugins/apps/threatbus_zeek/setup.py \
                     --replace "threatbus >= ${version}" ""
                   '';
+
+                  meta = with lib; {
+                    description = "The missing link to connect open-source threat intelligence tools.";
+                    homepage = "https://github.com/tenzir/threatbus";
+                    platforms = platforms.unix;
+                    license = licenses.bsd3; # BSD 3-Clause variant
+                  };
                 };
 
                 threatbus-inmem = python3Packages.buildPythonPackage rec {
@@ -405,28 +438,48 @@
                     stix2
                     stix2-patterns
                   ];
+
                   postPatch = ''
                     substituteInPlace plugins/backbones/threatbus_inmem/setup.py \
                     --replace "threatbus >= 2021.2.24" ""
                   '';
+
+                  meta = with lib; {
+                    description = "The missing link to connect open-source threat intelligence tools.";
+                    homepage = "https://github.com/tenzir/threatbus";
+                    platforms = platforms.unix;
+                    license = licenses.bsd3; # BSD 3-Clause variant
+                  };
                 };
 
                 threatbus-file-benchmark = python3Packages.buildPythonPackage rec {
                   pname = "threatbus_file_benchmark";
                   inherit version;
                   src = threatbus-src;
+
+
                   preConfigure = ''
                     cd plugins/backbones/file_benchmark
                   '';
+
                   doCheck = false;
+
                   propagatedBuildInputs = with python3Packages; [
                     stix2
                     stix2-patterns
                   ];
+
                   postPatch = ''
                     substituteInPlace plugins/backbones/file_benchmark/setup.py \
                     --replace "threatbus >= 2021.2.24" ""
                   '';
+
+                  meta = with lib; {
+                    description = "The missing link to connect open-source threat intelligence tools.";
+                    homepage = "https://github.com/tenzir/threatbus";
+                    platforms = platforms.unix;
+                    license = licenses.bsd3; # BSD 3-Clause variant
+                  };
                 };
 
               in
@@ -452,6 +505,12 @@
                 ];
                 postPatch = ''
               '';
+                meta = with lib; {
+                  description = "The missing link to connect open-source threat intelligence tools.";
+                  homepage = "https://github.com/tenzir/threatbus";
+                  platforms = platforms.unix;
+                  license = licenses.bsd3; # BSD 3-Clause variant
+                };
               }
             );
         };
