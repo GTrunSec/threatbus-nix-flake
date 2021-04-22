@@ -41,6 +41,7 @@
                       Whether to enable threatbus endpoint
                     '';
                   };
+
                   settings = mkOption {
                     default = { };
                     description = ''
@@ -118,7 +119,7 @@
           with lib;
           let
             cfg = config.services.threatbus-vast;
-            configFile = pkgs.writeText "config.yml" (cfg.settings + cfg.vast_binary);
+            configFile = pkgs.writeText "config.yml" (cfg.settings + cfg.vast_binary + cfg.vast_endpoint);
           in
           {
             options =
@@ -130,6 +131,12 @@
                     description = ''
                       Whether to enable threatbus-vast endpoint
                     '';
+                  };
+
+                  vast_endpoint = mkOption {
+                    type = types.str;
+                    default = "127.0.0.1:42000";
+                    description = "Vast listening host";
                   };
 
                   vast_binary = mkOption {
@@ -230,32 +237,13 @@
       rec {
 
         devShell = with pkgs; devshell.mkShell {
+          imports = [ (devshell.importTOML ./nix/commands.toml) ];
           packages = [
             threatbus
             broker
             threatbus-pyvast
           ];
           commands = with pkgs; [
-            {
-              name = "threatbus-inmem";
-              command = ''
-                threatbus -c config.plugins.yaml
-              '';
-              category = "plugin";
-              help = ''
-                test the plugin with threatbus
-              '';
-            }
-            {
-              name = "threatbus-vast";
-              command = ''
-                pyvast-threatbus -c config.vast.example.yaml
-              '';
-              category = "threatbus";
-              help = ''
-                test the threatbus with vast
-              '';
-            }
             {
               name = "get_vast";
               command = ''
@@ -266,17 +254,6 @@
               '';
               help = "print vast executable path";
               category = "vast";
-            }
-
-            {
-              name = "threatbus-test";
-              command = ''
-                threatbus -c config.example.yaml
-              '';
-              category = "threatbus";
-              help = ''
-                test the config.yaml with threatbus
-              '';
             }
           ];
         };
@@ -344,7 +321,7 @@
                 description = "The missing link to connect open-source threat intelligence tools.";
                 homepage = "https://github.com/tenzir/threatbus";
                 platforms = platforms.unix;
-                license = licenses.bsd3; # BSD 3-Clause variant
+                license = "BSD-3-Clause";
               };
             });
 
@@ -407,7 +384,7 @@
               description = "The missing link to connect open-source threat intelligence tools.";
               homepage = "https://github.com/tenzir/threatbus";
               platforms = platforms.unix;
-              license = licenses.bsd3; # BSD 3-Clause variant
+              license = "BSD-3-Clause";
             };
           });
 
@@ -439,7 +416,7 @@
                     description = "The missing link to connect open-source threat intelligence tools.";
                     homepage = "https://github.com/tenzir/threatbus";
                     platforms = platforms.unix;
-                    license = licenses.bsd3; # BSD 3-Clause variant
+                    license = "BSD-3-Clause"; # BSD 3-Clause variant
                   };
                 };
 
@@ -465,7 +442,7 @@
                     description = "The missing link to connect open-source threat intelligence tools.";
                     homepage = "https://github.com/tenzir/threatbus";
                     platforms = platforms.unix;
-                    license = licenses.bsd3; # BSD 3-Clause variant
+                    license = "BSD-3-Clause";
                   };
                 };
 
@@ -495,7 +472,7 @@
                     description = "The missing link to connect open-source threat intelligence tools.";
                     homepage = "https://github.com/tenzir/threatbus";
                     platforms = platforms.unix;
-                    license = licenses.bsd3; # BSD 3-Clause variant
+                    license = "BSD-3-Clause";
                   };
                 };
 
@@ -526,7 +503,7 @@
                   description = "The missing link to connect open-source threat intelligence tools.";
                   homepage = "https://github.com/tenzir/threatbus";
                   platforms = platforms.unix;
-                  license = licenses.bsd3; # BSD 3-Clause variant
+                  license = "BSD-3-Clause";
                 };
               }
             );

@@ -1,0 +1,17 @@
+[[commands]]
+name = "threatbus-inmem"
+category = "plugin"
+command = "threatbus -c conf/config.plugins.yaml"
+help = "run threatbus with config.plugins.yaml"
+
+[[commands]]
+name = "threatbus-vast"
+category = "pyvast"
+command = "pyvast-threatbus -c conf/config.vast.example.yaml"
+help = "run pyvast-threatbus with config.vast.example.yaml"
+
+[[commands]]
+name = "threatbus-example"
+category = "threatbus"
+command = "threatbus -c conf/config.example.yaml"
+help = "run threatbus with config.example.yaml"

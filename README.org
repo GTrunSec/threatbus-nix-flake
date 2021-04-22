@@ -1,58 +1,7 @@
 #+TITLE: README
 #+PROPERTY: header-args:sh :prologue "exec 2>&1" :epilogue ":"
-* Show Packages
-#+begin_src sh :async t :exports both :results code
-nix flake show
-#+end_src
-
-#+RESULTS:
-#+begin_src sh
-[1mgit+file:///home/gtrun/src/threatbus-nix-flake?ref=main&rev=61f651f19235e8dbbda219993abdb3352af0ff0e[0m
-[32;1m├───[0m[1mapps[0m
-[32;1m│   ├───[0m[1mx86_64-darwin[0m
-[32;1m│   │   ├───[0m[1mthreatbus[0m: app
-[32;1m│   │   └───[0m[1mthreatbus-pyvast[0m: app
-[32;1m│   └───[0m[1mx86_64-linux[0m
-[32;1m│       ├───[0m[1mthreatbus[0m: app
-[32;1m│       └───[0m[1mthreatbus-pyvast[0m: app
-[32;1m├───[0m[1mdefaultPackage[0m
-[32;1m│   ├───[0m[1mx86_64-darwin[0m: package 'python3.8-threatbus-2021.3.25'
-[32;1m│   └───[0m[1mx86_64-linux[0m: package 'python3.8-threatbus-2021.3.25'
-[32;1m├───[0m[1mdevShell[0m
-[32;1m│   ├───[0m[1mx86_64-darwin[0m: development environment 'devshell'
-[32;1m│   └───[0m[1mx86_64-linux[0m: development environment 'devshell'
-[32;1m├───[0m[1mhydraJobs[0m
-[32;1m│   ├───[0m[1mx86_64-darwin[0m
-[32;1m│   │   └───[0m[1mpackages[0m
-[32;1m│   │       ├───[0m[1mbroker[0m: derivation 'broker'
-[32;1m│   │       ├───[0m[1mthreatbus[0m: derivation 'python3.8-threatbus-2021.3.25'
-[32;1m│   │       ├───[0m[1mthreatbus-pyvast[0m: derivation 'python3.8-threatbus_pyvast-2021.3.25'
-[32;1m│   │       └───[0m[1mvast[0m: derivation 'vast-2021.03.25-rc2-46-gf427936fd-dirty'
-[32;1m│   └───[0m[1mx86_64-linux[0m
-[32;1m│       └───[0m[1mpackages[0m
-[32;1m│           ├───[0m[1mbroker[0m: derivation 'broker'
-[32;1m│           ├───[0m[1mthreatbus[0m: derivation 'python3.8-threatbus-2021.3.25'
-[32;1m│           ├───[0m[1mthreatbus-pyvast[0m: derivation 'python3.8-threatbus_pyvast-2021.3.25'
-[32;1m│           └───[0m[1mvast[0m: derivation 'vast-2021.03.25-rc2-46-gf427936fd-dirty'
-[32;1m├───[0m[1mnixosModules[0m
-[32;1m│   ├───[0m[1mthreatbus[0m: NixOS module
-[32;1m│   └───[0m[1mthreatbus-vast[0m: NixOS module
-[32;1m├───[0m[1moverlay[0m: Nixpkgs overlay
-[32;1m└───[0m[1mpackages[0m
-[32;1m    ├───[0m[1mx86_64-darwin[0m
-[32;1m    │   ├───[0m[1mbroker[0m: package 'broker'
-[32;1m    │   ├───[0m[1mthreatbus[0m: package 'python3.8-threatbus-2021.3.25'
-[32;1m    │   ├───[0m[1mthreatbus-pyvast[0m: package 'python3.8-threatbus_pyvast-2021.3.25'
-[32;1m    │   └───[0m[1mvast[0m: package 'vast-2021.03.25-rc2-46-gf427936fd-dirty'
-[32;1m    └───[0m[1mx86_64-linux[0m
-[32;1m        ├───[0m[1mbroker[0m: package 'broker'
-[32;1m        ├───[0m[1mthreatbus[0m: package 'python3.8-threatbus-2021.3.25'
-[32;1m        ├───[0m[1mthreatbus-pyvast[0m: package 'python3.8-threatbus_pyvast-2021.3.25'
-[32;1m        └───[0m[1mvast[0m: package 'vast-2021.03.25-rc2-46-gf427936fd-dirty'
-#+end_src
-
-* Build Example
-
+* Getting started
+** Build Packages
 #+begin_src sh :async t :exports both :results output
 nix build github:GTrunSec/GTrunSec/threatbus-nix-flake#<PACKAGE_NAME>
 #+end_src
@@ -60,8 +9,39 @@ nix build github:GTrunSec/GTrunSec/threatbus-nix-flake#<PACKAGE_NAME>
 #+begin_src sh :async t :exports both :results output
 nix build github:GTrunSec/GTrunSec/threatbus-nix-flake#threatbus
 #+end_src
+** Develop Shell (with nix-shell and direnv)
 
-* Add Nixos Modules Flake to NixOS
+#+begin_src sh :async t :exports both :results output
+nix-shell --command "menu"
+#+end_src
+
+#+RESULTS:
+#+begin_example
+[1m[general commands][0m
+
+  menu              - prints this menu
+
+[1m[plugin][0m
+
+  threatbus-inmem   - run threatbus with config.plugins.yaml
+
+[1m[pyvast][0m
+
+  threatbus-vast    - run pyvast-threatbus with config.vast.example.yaml
+
+[1m[threatbus][0m
+
+  threatbus-example - run threatbus with config.example.yaml
+
+[1m[vast][0m
+
+  get_vast          - print vast executable path
+
+#+end_example
+
+
+
+* Add Threatbus Modules to NixOS
 
 #+begin_src nix :async t :exports both :results output
 threatbus-flake.nixosModules.threatbus
@@ -81,6 +61,35 @@ threatbus-flake.nixosModules.threatbus-vast
     settings = builtins.readFile ./config.example.yaml;
   };
 #+end_src
+
+- deploy tenzir infrastructure with flakes on NixOS
+
+#+begin_src sh :async t :exports both :results output
+{
+    description = "tenzir infrastructure deployment";
+
+    inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    threatbus-flake = { url = "github:GTrunSec/threatbus-nix-flake/main";};
+  };
+
+  outputs = { nixpkgs, emacsNg-flake, rust-overlay ... }: {
+    nixosConfigurations = {
+      hostname = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./configuration.nix # Your system configuration.
+          threatbus-flake.nixosModules.threatbus
+          threatbus-flake.nixosModules.threatbus-vast
+          ./nix/tenzir-infra.nix
+        ];
+      };
+    };
+  };
+}
+#+end_src
+
+#+RESULTS:
 
 * ThreatBus Systemd Services Debugging
 
