@@ -123,16 +123,17 @@
     "threatbus-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1618227962,
-        "narHash": "sha256-O3WydOliLVVAemLk43ye7Br3cn+6S7oyIEJRobGDviU=",
+        "lastModified": 1622100787,
+        "narHash": "sha256-mrseKOh5pSEaGBf9hkD44BU6eulUa5ZoRpxnt2Ur4ZY=",
         "owner": "tenzir",
         "repo": "threatbus",
-        "rev": "b6e59a833836191816d66c6c740a3895f46ee8e9",
+        "rev": "8285c32985ff31a87e3ed1cd00fcd364b87bed00",
         "type": "github"
       },
       "original": {
         "owner": "tenzir",
         "repo": "threatbus",
+        "rev": "8285c32985ff31a87e3ed1cd00fcd364b87bed00",
         "type": "github"
       }
     },

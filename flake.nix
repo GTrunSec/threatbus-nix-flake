@@ -4,7 +4,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "nixpkgs/3a7674c896847d18e598fa5da23d7426cb9be3d2";
-    threatbus-src = { url = "github:tenzir/threatbus"; flake = false; };
+    threatbus-src = { url = "github:tenzir/threatbus/8285c32985ff31a87e3ed1cd00fcd364b87bed00"; flake = false; };
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     devshell-flake.url = "github:numtide/devshell";
     vast-flake = { url = "github:GTrunSec/vast/nix-flake"; inputs.nixpkgs-hardenedlinux.follows = "nixpkgs-hardenedlinux"; inputs.flake-utils.follows = "flake-utils"; };
@@ -281,7 +281,7 @@
     {
       overlay = final: prev:
         let
-          version = "2021.3.25";
+          version = "2021.5.27";
         in
         {
 
@@ -435,7 +435,7 @@
 
                   postPatch = ''
                     substituteInPlace plugins/backbones/threatbus_inmem/setup.py \
-                    --replace "threatbus >= 2021.2.24" ""
+                    --replace "threatbus >= ${version}" ""
                   '';
 
                   meta = with lib; {
