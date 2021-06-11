@@ -8,7 +8,7 @@
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     devshell-flake.url = "github:numtide/devshell";
     vast-flake = { url = "github:GTrunSec/vast/nix-flake"; inputs.nixpkgs-hardenedlinux.follows = "nixpkgs-hardenedlinux"; inputs.flake-utils.follows = "flake-utils"; };
-    nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; flake = false; };
+    nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; };
   };
 
   outputs =
@@ -135,7 +135,7 @@
 
                   vast_endpoint = mkOption {
                     type = types.str;
-                    default = "127.0.0.1:42000";
+                    default = "vast: 127.0.0.1:42000";
                     description = "Vast listening host";
                   };
 
@@ -230,6 +230,7 @@
             self.overlay
             devshell-flake.overlay
             vast-flake.overlay
+            nixpkgs-hardenedlinux.overlay
           ];
           config = { };
         };
@@ -284,9 +285,6 @@
           version = "2021.5.27";
         in
         {
-
-          broker = prev.callPackage "${nixpkgs-hardenedlinux}/pkgs/broker" { };
-
           threatbus-pyvast = with final;
             (python3Packages.buildPythonPackage {
               pname = "threatbus_pyvast";
