@@ -140,6 +140,7 @@
                   };
 
                   vast_binary = mkOption {
+                    type = types.str;
                     default = ''
                       vast_binary: ${vast-flake.packages."${pkgs.system}".vast}/bin/vast
                     '';

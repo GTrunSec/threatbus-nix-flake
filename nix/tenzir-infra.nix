@@ -3,7 +3,7 @@
 {
   services.threatbus-vast = {
     enable = true;
-    vast_endpoint = "127.0.0.1:42000";
+    vast_endpoint = "127.0.0.1:4000";
     settings = builtins.readFile ./config.vast.deploy.yaml;
   };
 
