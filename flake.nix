@@ -272,6 +272,7 @@
         apps = {
           threatbus = { type = "app"; program = "${pkgs.threatbus}/bin/threatbus"; };
           threatbus-latest = { type = "app"; program = "${pkgs.threatbus-latest}/bin/threatbus"; };
+          threatbus-pyvast-latest = { type = "app"; program = "${pkgs.threatbus-pyvast-latest}/bin/pyvast-threatbus"; };
           threatbus-pyvast = { type = "app"; program = "${pkgs.threatbus-pyvast}/bin/pyvast-threatbus"; };
         };
 
@@ -310,7 +311,7 @@
               runHook preInstall
               mkdir -p $out/scripts
               cp -r $src/apps/zeek/* $out/scripts
-              runHook preInstall
+              runHook postInstall
             '';
           };
 
@@ -386,6 +387,7 @@
               inherit (final.threatbus-sources.dynaconf) src version pname;
               doCheck = false;
               propagatedBuildInputs = with python3Packages; [
+                setuptools
               ];
             });
 

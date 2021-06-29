@@ -32,12 +32,16 @@ jobs:
 
     - name: Build Threatbus
       run: nix -Lv build .#threatbus
+    - name: Check threatbus Exec
+      run: nix run ./#threatbus -- --help
 
     - name: Build Latest Threatbus
       run: nix -Lv build .#threatbus-latest
 
     - name: Build threatbus-pyvast Release
       run: nix -Lv build .#threatbus-pyvast
+    - name: Check threatbus-pyvast Exec
+      run: nix run ./#threatbus-pyvast -- --help
 
     - name: Build Latest threatbus-pyvast
       run: nix -Lv build .#threatbus-pyvast-latest
