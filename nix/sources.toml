@@ -1,0 +1,23 @@
+# nvfetcher.toml
+[threatbus-release]
+src.github = "tenzir/threatbus"
+src.include_regex = "release/*"
+fetch.github = "tenzir/threatbus"
+
+
+[threatbus-master]
+src.git = "https://github.com/tenzir/threatbus"
+fetch.github = "tenzir/threatbus"
+
+
+[stix2]
+src.pypi = "stix2"
+fetch.pypi = "stix2"
+
+[stix2-patterns]
+src.pypi = "stix2-patterns"
+fetch.pypi = "stix2-patterns"
+
+[dynaconf]
+src.pypi = "dynaconf"
+fetch.pypi = "dynaconf"
