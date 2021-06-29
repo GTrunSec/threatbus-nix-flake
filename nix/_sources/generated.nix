@@ -21,23 +21,23 @@
   };
   stix2-patterns = {
     pname = "stix2-patterns";
-    version = "1.3.2";
+    version = "1.3.0";
     src = fetchurl {
-      sha256 = "194yi2f59q7vzap0i3lzbaj9wahkaivribrka0h26cic5lqfakqp";
-      url = "https://pypi.io/packages/source/s/stix2-patterns/stix2-patterns-1.3.2.tar.gz";
+      sha256 = "0pdr69mkx67jx5d73zrf1shl6qnfs29pqdix9662mb7ygsk2zjvz";
+      url = "https://pypi.io/packages/source/s/stix2-patterns/stix2-patterns-1.3.0.tar.gz";
     };
 
   };
-  threatbus-master = {
-    pname = "threatbus-master";
-    version = "b3839b4d08a349ab4fb45547c6674134a0b03ddc";
+  threatbus-latest = {
+    pname = "threatbus-latest";
+    version = "e6f2a315cf1e730ce3483f94769a12658e058538";
     src = fetchgit {
       url = "https://github.com/tenzir/threatbus";
-      rev = "b3839b4d08a349ab4fb45547c6674134a0b03ddc";
+      rev = "e6f2a315cf1e730ce3483f94769a12658e058538";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
-      sha256 = "1rivh7qx7bkj7505pxmn5fa79lwv5n5rs4wf92qcf8jgc7d3igzc";
+      sha256 = "0127ikcmpjxkhi2jjm23dw04nd73cfj4snmls9a8fi9ansghfgf9";
     };
 
   };

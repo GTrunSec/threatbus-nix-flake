@@ -5,7 +5,7 @@ src.include_regex = "release/*"
 fetch.github = "tenzir/threatbus"
 
 
-[threatbus-master]
+[threatbus-latest]
 src.git = "https://github.com/tenzir/threatbus"
 fetch.github = "tenzir/threatbus"
 
@@ -15,7 +15,8 @@ src.pypi = "stix2"
 fetch.pypi = "stix2"
 
 [stix2-patterns]
-src.pypi = "stix2-patterns"
+#src.pypi = "stix2-patterns"
+src.manual = "1.3.0"
 fetch.pypi = "stix2-patterns"
 
 [dynaconf]

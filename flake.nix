@@ -271,15 +271,16 @@
 
         apps = {
           threatbus = { type = "app"; program = "${pkgs.threatbus}/bin/threatbus"; };
-          threatbus-master = { type = "app"; program = "${pkgs.threatbus-master}/bin/threatbus"; };
+          threatbus-latest = { type = "app"; program = "${pkgs.threatbus-latest}/bin/threatbus"; };
           threatbus-pyvast = { type = "app"; program = "${pkgs.threatbus-pyvast}/bin/pyvast-threatbus"; };
         };
 
         packages = flake-utils.lib.flattenTree {
           threatbus = pkgs.threatbus;
-          threatbus-master = pkgs.threatbus-master;
+          threatbus-latest = pkgs.threatbus-latest;
+          threatbus-zeek = pkgs.threatbus-zeek;
           broker = pkgs.broker;
-          threatbus-pyvast-master = pkgs.threatbus-pyvast-master;
+          threatbus-pyvast-latest = pkgs.threatbus-pyvast-latest;
           threatbus-pyvast = pkgs.threatbus-pyvast;
           vast = vast-flake.packages.${system}.vast;
         };
@@ -300,8 +301,21 @@
         {
           threatbus-sources = prev.callPackage ./nix/_sources/generated.nix { };
 
-          threatbus-master = with final; (final.threatbus.overrideAttrs (old: rec {
-            inherit (final.threatbus-sources.threatbus-master) src pname version;
+          threatbus-zeek = with final; stdenv.mkDerivation rec {
+            inherit (final.threatbus-sources.threatbus-latest) src pname version;
+            name = "threatbus-zeek";
+            phases = [ "installPhase" ];
+            buildInputs = [ ];
+            installPhase = ''
+              runHook preInstall
+              mkdir -p $out/scripts
+              cp -r $src/apps/zeek/* $out/scripts
+              runHook preInstall
+            '';
+          };
+
+          threatbus-latest = with final; (final.threatbus.overrideAttrs (old: rec {
+            inherit (final.threatbus-sources.threatbus-latest) src pname version;
             propagatedBuildInputs = with final.python3Packages; [
               stix2
               dynaconf
@@ -309,16 +323,16 @@
               python-dateutil
               black
               pluggy
-              (threatbus-zeek.overrideAttrs (old: { inherit (final.threatbus-sources.threatbus-master) src version; plugin-version = version; }))
-              (threatbus-inmem.overrideAttrs (old: { inherit (final.threatbus-sources.threatbus-master) src version; plugin-version = version; }))
-              (threatbus-file-benchmark.overrideAttrs (old: { inherit (final.threatbus-sources.threatbus-master) src version; plugin-version = version; }))
-              (threatbus-zmq-app.overrideAttrs (old: { inherit (final.threatbus-sources.threatbus-master) src version; plugin-version = version; }))
+              (threatbus-zeek-plugin.overrideAttrs (old: { inherit (final.threatbus-sources.threatbus-latest) src version; plugin-version = version; }))
+              (threatbus-inmem.overrideAttrs (old: { inherit (final.threatbus-sources.threatbus-latest) src version; plugin-version = version; }))
+              (threatbus-file-benchmark.overrideAttrs (old: { inherit (final.threatbus-sources.threatbus-latest) src version; plugin-version = version; }))
+              (threatbus-zmq-app.overrideAttrs (old: { inherit (final.threatbus-sources.threatbus-latest) src version; plugin-version = version; }))
               final.broker
             ];
           }));
 
-          threatbus-pyvast-master = with final; (final.threatbus-pyvast.overrideAttrs (old: {
-            inherit (final.threatbus-sources.threatbus-master) src pname;
+          threatbus-pyvast-latest = with final; (final.threatbus-pyvast.overrideAttrs (old: {
+            inherit (final.threatbus-sources.threatbus-latest) src pname;
             propagatedBuildInputs = with final.python3Packages; [
               stix2-patterns
               dynaconf
@@ -326,7 +340,7 @@
               pyzmq
               coloredlogs
               pyvast
-              threatbus-master
+              threatbus-latest
             ];
           }));
 
@@ -427,7 +441,7 @@
             };
           });
 
-          threatbus-zeek = with final; python3Packages.buildPythonPackage rec {
+          threatbus-zeek-plugin = with final; python3Packages.buildPythonPackage rec {
             pname = "threatbus_zeek";
             inherit (final.threatbus-sources.threatbus-release) src version;
 
@@ -523,7 +537,7 @@
                 python-dateutil
                 black
                 pluggy
-                threatbus-zeek
+                threatbus-zeek-plugin
                 threatbus-inmem
                 threatbus-file-benchmark
                 threatbus-zmq-app

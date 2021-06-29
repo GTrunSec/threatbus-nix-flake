@@ -24,13 +24,23 @@ jobs:
         name: zeek
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-    - name: Check Flake Check
+    - name: Run Flake Check
       run: nix -Lv flake check
+
+    - name: Run Flake Show
+      run: nix -Lv flake show
+
     - name: Build Threatbus
       run: nix -Lv build .#threatbus
-    - name: Build Threatbus Master
-      run: nix -Lv build .#threatbus-master
-    - name: Build pyvast-threatbus Master
+
+    - name: Build Latest Threatbus
+      run: nix -Lv build .#threatbus-latest
+
+    - name: Build threatbus-pyvast Release
       run: nix -Lv build .#threatbus-pyvast
-    - name: Build threatbus-pyvast Master
-      run: nix -Lv build .#threatbus-pyvast-master
+
+    - name: Build Latest threatbus-pyvast
+      run: nix -Lv build .#threatbus-pyvast-latest
+
+    - name: Build threatbus-zeek Script
+      run: nix -Lv build .#threatbus-zeek
