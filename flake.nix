@@ -145,7 +145,7 @@
                   vast_binary = mkOption {
                     type = types.str;
                     default = ''
-                      vast_binary: ${vast2nix.packages."${pkgs.system}".vast}/bin/vast-release
+                      vast_binary: ${vast2nix.packages."${pkgs.system}".vast-release}/bin/vast
                     '';
                   };
 
