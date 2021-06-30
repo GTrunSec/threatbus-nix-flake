@@ -6,7 +6,7 @@
     nixpkgs.url = "nixpkgs/release-21.05";
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     devshell-flake.url = "github:numtide/devshell";
-    vast-flake = { url = "github:GTrunSec/vast/nix-flake"; inputs.nixpkgs-hardenedlinux.follows = "nixpkgs-hardenedlinux"; inputs.flake-utils.follows = "flake-utils"; };
+    vast2nix = { url = "github:GTrunSec/vast2nix"; inputs.nixpkgs-hardenedlinux.follows = "nixpkgs-hardenedlinux"; inputs.flake-utils.follows = "flake-utils"; };
     nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; };
     nvfetcher = {
       url = "github:berberman/nvfetcher";
@@ -20,7 +20,7 @@
     , flake-utils
     , flake-compat
     , devshell-flake
-    , vast-flake
+    , vast2nix
     , nixpkgs-hardenedlinux
     , nvfetcher
     }:
@@ -145,7 +145,7 @@
                   vast_binary = mkOption {
                     type = types.str;
                     default = ''
-                      vast_binary: ${vast-flake.packages."${pkgs.system}".vast}/bin/vast
+                      vast_binary: ${vast2nix.packages."${pkgs.system}".vast}/bin/vast-release
                     '';
                   };
 
@@ -233,7 +233,7 @@
           overlays = [
             self.overlay
             devshell-flake.overlay
-            vast-flake.overlay
+            vast2nix.overlay
             nixpkgs-hardenedlinux.overlay
             nvfetcher.overlay
           ];
@@ -283,7 +283,7 @@
           broker = pkgs.broker;
           threatbus-pyvast-latest = pkgs.threatbus-pyvast-latest;
           threatbus-pyvast = pkgs.threatbus-pyvast;
-          vast = vast-flake.packages.${system}.vast;
+          vast-release = vast2nix.packages.${system}.vast-release;
         };
 
         hydraJobs = {
