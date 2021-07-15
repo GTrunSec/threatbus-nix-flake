@@ -48,3 +48,6 @@ jobs:
 
     - name: Build threatbus-zeek Script
       run: nix -Lv build .#threatbus-zeek
+
+    - name: Check threatbus with Systemd on NixOS-vm
+      run: nix -Lv build .#threatbus-vm-tests
