@@ -15,3 +15,5 @@ name = "threatbus-example"
 category = "threatbus"
 command = "threatbus -c conf/config.example.yaml"
 help = "run threatbus with config.example.yaml"
+
+

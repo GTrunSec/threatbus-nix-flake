@@ -11,7 +11,8 @@ fetch.github = "tenzir/threatbus"
 
 
 [stix2]
-src.pypi = "stix2"
+#src.pypi = "stix2"
+src.manual = "2.1.0"
 fetch.pypi = "stix2"
 
 [stix2-patterns]

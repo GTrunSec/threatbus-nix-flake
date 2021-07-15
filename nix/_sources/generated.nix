@@ -30,14 +30,14 @@
   };
   threatbus-latest = {
     pname = "threatbus-latest";
-    version = "e6f2a315cf1e730ce3483f94769a12658e058538";
+    version = "7116786ab56d53d39c5105d610c844943278ed52";
     src = fetchgit {
       url = "https://github.com/tenzir/threatbus";
-      rev = "e6f2a315cf1e730ce3483f94769a12658e058538";
+      rev = "7116786ab56d53d39c5105d610c844943278ed52";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
-      sha256 = "0127ikcmpjxkhi2jjm23dw04nd73cfj4snmls9a8fi9ansghfgf9";
+      sha256 = "02rg8c11q7j357m57l5zjg8c44fi0i861c0n07wra45j91vh999l";
     };
 
   };

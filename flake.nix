@@ -31,7 +31,7 @@
           with lib;
           let
             cfg = config.services.threatbus;
-            configFile = pkgs.writeText "config.yml" cfg.settings;
+            configFile = pkgs.writeText "config.yml" cfg.extraConfig;
           in
           {
             options =
@@ -45,10 +45,10 @@
                     '';
                   };
 
-                  settings = mkOption {
+                  extraConfig = mkOption {
                     default = { };
                     description = ''
-                      settings = builtins.readFile ./config.example.yaml;
+                      extraConfig = builtins.readFile ./config.example.yaml;
                     '';
                   };
 
@@ -122,7 +122,7 @@
           with lib;
           let
             cfg = config.services.threatbus-vast;
-            configFile = pkgs.writeText "config.yml" (cfg.settings + cfg.vast_binary + cfg.vast_endpoint);
+            configFile = pkgs.writeText "config.yml" (cfg.extraConfig + cfg.vast_binary + cfg.vast_endpoint);
           in
           {
             options =
@@ -149,10 +149,10 @@
                     '';
                   };
 
-                  settings = mkOption {
+                  extraConfig = mkOption {
                     default = { };
                     description = ''
-                      settings = builtins.readFile ./config.vast.example.yaml;
+                      extraConfig = builtins.readFile ./config.vast.example.yaml;
                     '';
                   };
 
@@ -276,14 +276,17 @@
           threatbus-pyvast = { type = "app"; program = "${pkgs.threatbus-pyvast}/bin/pyvast-threatbus"; };
         };
 
-        packages = flake-utils.lib.flattenTree {
-          threatbus = pkgs.threatbus;
-          threatbus-latest = pkgs.threatbus-latest;
-          threatbus-zeek = pkgs.threatbus-zeek;
-          broker = pkgs.broker;
-          threatbus-pyvast-latest = pkgs.threatbus-pyvast-latest;
-          threatbus-pyvast = pkgs.threatbus-pyvast;
-          vast-release = vast2nix.packages.${system}.vast-release;
+        packages = flake-utils.lib.flattenTree
+          {
+            threatbus = pkgs.threatbus;
+            threatbus-latest = pkgs.threatbus-latest;
+            threatbus-zeek = pkgs.threatbus-zeek;
+            broker = pkgs.broker;
+            threatbus-pyvast-latest = pkgs.threatbus-pyvast-latest;
+            threatbus-pyvast = pkgs.threatbus-pyvast;
+            vast-release = vast2nix.packages.${system}.vast-release;
+          } // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
+          threatbus-vm-tests = pkgs.threatbus-vm-tests.threatbus-systemd;
         };
 
         hydraJobs = {
@@ -301,6 +304,13 @@
         in
         {
           threatbus-sources = prev.callPackage ./nix/_sources/generated.nix { };
+
+          threatbus-vm-tests = prev.lib.optionalAttrs prev.stdenv.isLinux (import ./nixos-test.nix
+            {
+              makeTest = (import (prev.path + "/nixos/tests/make-test-python.nix"));
+              pkgs = final;
+              inherit self;
+            });
 
           threatbus-zeek = with final; stdenv.mkDerivation rec {
             inherit (final.threatbus-sources.threatbus-latest) src pname version;
