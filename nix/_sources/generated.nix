@@ -8,7 +8,6 @@
       sha256 = "1fc14whngvcknr49gfqxvkah78bnpaibhramjb2hky2j63c75x5j";
       url = "https://pypi.io/packages/source/d/dynaconf/dynaconf-3.1.4.tar.gz";
     };
-
   };
   stix2 = {
     pname = "stix2";
@@ -17,7 +16,6 @@
       sha256 = "0f698l7iidk4xic4q22vyr66z3wiwj1vhwgyfr714hswkxcwzj8m";
       url = "https://pypi.io/packages/source/s/stix2/stix2-2.1.0.tar.gz";
     };
-
   };
   stix2-patterns = {
     pname = "stix2-patterns";
@@ -26,7 +24,6 @@
       sha256 = "0pdr69mkx67jx5d73zrf1shl6qnfs29pqdix9662mb7ygsk2zjvz";
       url = "https://pypi.io/packages/source/s/stix2-patterns/stix2-patterns-1.3.0.tar.gz";
     };
-
   };
   threatbus-latest = {
     pname = "threatbus-latest";
@@ -39,7 +36,6 @@
       leaveDotGit = false;
       sha256 = "02rg8c11q7j357m57l5zjg8c44fi0i861c0n07wra45j91vh999l";
     };
-
   };
   threatbus-release = {
     pname = "threatbus-release";
@@ -52,6 +48,5 @@
       leaveDotGit = false;
       sha256 = "1mcdaffvh23frq59a6rp8k2yi8f92ipsn963g0x6igl9h15mmpvk";
     };
-
   };
 }
