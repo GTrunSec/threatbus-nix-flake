@@ -57,10 +57,10 @@ jobs:
       run: nix -Lv build .#threatbus-zeek
 
     - name: Check threatbus with Systemd on NixOS-vm
-      run: nix -Lv build .#threatbus-vm-tests
+      run: nix -Lv build .#threatbus-vm-systemd
 
     - name: Check threatbus-vast with Systemd on NixOS-vm
-      run: nix -Lv build .#threatbus-vast-vm-tests
+      run: nix -Lv build .#threatbus-vast-vm-systemd
 
     - name: Commit changes
       uses: stefanzweifel/git-auto-commit-action@v4
