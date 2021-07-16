@@ -30,6 +30,9 @@ jobs:
     - name: Run Flake Show
       run: nix -Lv flake show
 
+    - name: Run nvfetcher
+      run: nix -Lv develop --command nvfetcher
+
     - name: Build Threatbus
       run: nix -Lv build .#threatbus
     - name: Check threatbus Exec
@@ -51,3 +54,11 @@ jobs:
 
     - name: Check threatbus with Systemd on NixOS-vm
       run: nix -Lv build .#threatbus-vm-tests
+
+    - name: Check threatbus-vast with Systemd on NixOS-vm
+      run: nix -Lv build .#threatbus-vast-vm-tests
+
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "CI Action Auto Bumpup"

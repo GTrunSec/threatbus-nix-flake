@@ -6,12 +6,9 @@
     nixpkgs.url = "nixpkgs/release-21.05";
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     devshell-flake.url = "github:numtide/devshell";
-    vast2nix = { url = "github:GTrunSec/vast2nix"; inputs.nixpkgs-hardenedlinux.follows = "nixpkgs-hardenedlinux"; inputs.flake-utils.follows = "flake-utils"; };
+    vast2nix = { url = "github:GTrunSec/vast2nix"; };
     nixpkgs-hardenedlinux = { url = "github:hardenedlinux/nixpkgs-hardenedlinux"; };
-    nvfetcher = {
-      url = "github:berberman/nvfetcher";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nvfetcher = { url = "github:berberman/nvfetcher"; };
   };
 
   outputs =
@@ -122,7 +119,7 @@
           with lib;
           let
             cfg = config.services.threatbus-vast;
-            configFile = pkgs.writeText "config.yml" (cfg.extraConfig + cfg.vast_binary + cfg.vast_endpoint);
+            configFile = pkgs.writeText "config.yml" (cfg.extraConfig + cfg.vastPath);
           in
           {
             options =
@@ -136,14 +133,8 @@
                     '';
                   };
 
-                  vast_endpoint = mkOption {
-                    type = types.str;
-                    default = "vast: 127.0.0.1:42000";
-                    description = "Vast listening host";
-                  };
-
-                  vast_binary = mkOption {
-                    type = types.str;
+                  vastPath = mkOption {
+                    type = types.lines;
                     default = ''
                       vast_binary: ${vast2nix.packages."${pkgs.system}".vast-release}/bin/vast
                     '';
@@ -286,7 +277,10 @@
             threatbus-pyvast = pkgs.threatbus-pyvast;
             vast-release = vast2nix.packages.${system}.vast-release;
           } // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
-          threatbus-vm-tests = pkgs.threatbus-vm-tests.threatbus-systemd;
+          inherit (pkgs.threatbus-vm-tests)
+            threatbus-vm-systemd
+            threatbus-vast-vm-systemd
+            ;
         };
 
         hydraJobs = {
@@ -309,7 +303,7 @@
             {
               makeTest = (import (prev.path + "/nixos/tests/make-test-python.nix"));
               pkgs = final;
-              inherit self;
+              inherit self vast2nix;
             });
 
           threatbus-zeek = with final; stdenv.mkDerivation rec {
