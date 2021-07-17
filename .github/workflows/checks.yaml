@@ -40,11 +40,6 @@ jobs:
     - name: Run nvfetcher
       run: |
         nix -Lv develop --command nvfetcher --commit-changes
-        # reset shake-database
-        if [ ! -z "$(git diff --stat | grep '1 file changed')" ]; then
-        git reset --hard
-        fi
-
 
     - name: Build Threatbus
       run: nix -Lv build .#threatbus
@@ -71,8 +66,5 @@ jobs:
     - name: Check threatbus-vast with Systemd on NixOS-vm
       run: nix -Lv build .#threatbus-vast-vm-systemd
 
-    - name: Commit changes
-      if: ${{ env.COMMIT_MSG != null }}
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: ${{ env.COMMIT_MSG }}
+    - name: Git Push Bumpup
+      run: git push
