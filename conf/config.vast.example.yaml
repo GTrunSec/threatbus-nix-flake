@@ -10,7 +10,7 @@ metrics:
   interval: 10 # set to 0 to disable metrics
   filename: metrics.log
 
-vast: "localhost:42000"
+vast: "localhost:4000"
 threatbus: "127.0.0.1:13370"
 
 

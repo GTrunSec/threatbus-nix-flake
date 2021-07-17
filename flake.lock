@@ -646,11 +646,11 @@
         "zeek-vast-src": "zeek-vast-src"
       },
       "locked": {
-        "lastModified": 1626469576,
-        "narHash": "sha256-8Y+KzCAmhMnb8vfG6R5YMmhFXjWivt2FPWhzpBQpazs=",
+        "lastModified": 1626496400,
+        "narHash": "sha256-cyCvqPISTE+jUCXzxFuJ6xsTVb3LPnSFMZvxkiBGOqI=",
         "owner": "GTrunSec",
         "repo": "vast2nix",
-        "rev": "4b144eb0c8245aae915af3138a56489a9d406fc4",
+        "rev": "e32d05a1429764ff2125a49417e701970044b5dd",
         "type": "github"
       },
       "original": {

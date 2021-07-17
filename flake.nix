@@ -89,11 +89,11 @@
                 '';
 
                 serviceConfig = {
+                  Type = "simple";
                   Restart = "always";
                   RestartSec = "10";
                   ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
                   User = "threatbus";
-                  Type = "simple";
                   WorkingDirectory = "${cfg.dataDir}";
                   ReadWritePaths = "${cfg.dataDir}";
                   RuntimeDirectory = "threatbus";
