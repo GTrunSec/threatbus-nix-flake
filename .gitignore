@@ -3,5 +3,4 @@
 *.log
 tmp/
 
-nix/_sources/.shake.database
 result
